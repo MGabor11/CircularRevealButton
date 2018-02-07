@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.apppoweron.circularrevealbutton.container.CircularRevealContainerImpl xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_circular_reveal_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+            android:id="@+id/main_standard_1_btn"
+            android:layout_width="match_parent"
+            android:background="@color/test_btn_secondary_color"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="Standard loading button 1"
+            android:textColor="@android:color/white" />
+
+        <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+            android:id="@+id/main_standard_2_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="Standard loading button 2"
+            android:textColor="@android:color/holo_red_dark" />
+
+        <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+            android:id="@+id/main_animated_1_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="15dp"
+            android:background="@color/test_btn_secondary_color"
+            android:text="Circular reveal button 1"
+            android:textColor="@android:color/holo_blue_light"
+            app:isAnimEnabled="true"
+            app:requiredOffset="21" />
+
+        <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+            android:id="@+id/main_animated_2_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="15dp"
+            android:background="@color/test_btn_color"
+            android:text="Circular reveal button 2"
+            android:textColor="@android:color/holo_red_dark"
+            app:isAnimEnabled="true" />
+
+    </LinearLayout>
+
+</com.apppoweron.circularrevealbutton.container.CircularRevealContainerImpl>

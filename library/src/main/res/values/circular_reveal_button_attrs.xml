@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircularRevealButton">
+        <attr name="requiredOffset" format="integer" />
+        <attr name="progressWidth" format="integer" />
+        <attr name="isAnimEnabled" format="boolean" />
+        <attr name="animDuration" format="integer" />
+        <attr name="buttonBackgroundColor" format="color" />
+    </declare-styleable>
+
+</resources>
