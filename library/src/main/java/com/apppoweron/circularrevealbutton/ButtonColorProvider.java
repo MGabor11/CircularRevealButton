@@ -14,24 +14,24 @@ import java.lang.reflect.Field;
 /**
  * Collection of button regarded color methods
  */
-public class ButtonColorProvider {
+class ButtonColorProvider {
 
     private Button button;
 
     private String originalTextColorHex;
 
-    public ButtonColorProvider(Button button) {
+    ButtonColorProvider(Button button) {
         this.button = button;
     }
 
-    public String getButtonTextColorHex() {
+    private String getButtonTextColorHex() {
         if (TextUtils.isEmpty(originalTextColorHex)) {
             originalTextColorHex = Integer.toHexString(button.getTextColors().getDefaultColor()).substring(2); //Cutting off the first two characters, because it is ARGB
         }
         return originalTextColorHex;
     }
 
-    public int translateAnimatedValueIntoFadingColor(ValueAnimator valueAnimator) {
+    int translateAnimatedValueIntoFadingColor(ValueAnimator valueAnimator) {
         return Color.parseColor(getFirstAlphaTag((Integer) valueAnimator.getAnimatedValue()) + getButtonTextColorHex());
     }
 
