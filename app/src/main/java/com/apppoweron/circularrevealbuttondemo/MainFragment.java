@@ -31,6 +31,18 @@ public class MainFragment extends BaseFragment {
         AnimatedLoadingButton animated1 = view.findViewById(R.id.main_animated_1_btn);
         AnimatedLoadingButton animated2 = view.findViewById(R.id.main_animated_2_btn);
 
+        AnimatedLoadingButton hybridUsage = view.findViewById(R.id.main_hybrid_btn);
+        hybridUsage.setOnClickListener(view1 -> {
+            view.postDelayed(() -> {
+                try {
+                    ((AnimatedLoadingButton) view1).startCircularReveal(R.id.main_circular_reveal_container, viewId ->
+                            Toast.makeText(view1.getContext(), "onAnimEnd - " + ((AnimatedLoadingButton) view1).getText(), Toast.LENGTH_LONG).show());
+                } catch (CircularRevealContainerNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }, 6000);
+        });
+
         standard1.setOnClickListener(getOnClickListener(standard1));
         standard2.setOnClickListener(getOnClickListener(standard2));
         animated1.setOnClickListener(getOnClickListener(animated1));

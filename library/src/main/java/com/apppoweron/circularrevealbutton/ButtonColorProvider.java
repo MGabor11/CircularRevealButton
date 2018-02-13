@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.widget.Button;
 
@@ -19,6 +21,8 @@ class ButtonColorProvider {
     private Button button;
 
     private String originalTextColorHex;
+
+    private Integer originalColorId;
 
     ButtonColorProvider(Button button) {
         this.button = button;
@@ -43,26 +47,28 @@ class ButtonColorProvider {
         return "#" + result;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     int getButtonOriginalColorId() {
-        int result = 0;
-        if (button.getBackground() instanceof ColorDrawable) {
-            ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
-            result = buttonColor.getColor();
-        } else if (button.getBackground() instanceof RippleDrawable) {
-            RippleDrawable buttonColor = (RippleDrawable) button.getBackground();
-            Drawable.ConstantState state = buttonColor.getConstantState();
-            try {
-                Field colorField = state.getClass().getDeclaredField("mColor");
-                colorField.setAccessible(true);
-                ColorStateList colorStateList = (ColorStateList) colorField.get(state);
-                result = colorStateList.getDefaultColor();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        if (originalColorId == null) {
+            if (button.getBackground() instanceof ColorDrawable) {
+                ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
+                originalColorId = buttonColor.getColor();
+            } else if (button.getBackground() instanceof RippleDrawable) {
+                RippleDrawable buttonColor = (RippleDrawable) button.getBackground();
+                Drawable.ConstantState state = buttonColor.getConstantState();
+                try {
+                    Field colorField = state.getClass().getDeclaredField("mColor");
+                    colorField.setAccessible(true);
+                    ColorStateList colorStateList = (ColorStateList) colorField.get(state);
+                    originalColorId = colorStateList.getDefaultColor();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return result;
+        return originalColorId;
     }
 
 }

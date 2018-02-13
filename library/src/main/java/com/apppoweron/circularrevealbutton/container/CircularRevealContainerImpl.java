@@ -71,28 +71,24 @@ public class CircularRevealContainerImpl extends FrameLayout implements Circular
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void startCircularRevealAnimation(ButtonCRevealAnimationData data, ButtonAnimationEndListener animEndListener) {
 
         //Assemble animator
-        Animator animator = null;
-        try {
-            animator = assembleAnimator(data, animEndListener);
-            if (animator != null) {
-                //Set the color of the animation
-                setAnimationColor(data.getAnimColor());
+        Animator animator = assembleAnimator(data, animEndListener);
 
-                //Disabling touch events when it does the animation
-                isAnimInProgress = true;
+        //Set the color of the animation
+        setAnimationColor(data.getAnimColor());
 
-                //Start the animation!
-                animator.start();
-            }
-        } catch (OSNotSupportedException e) {
-            e.printStackTrace();
-            animEndListener.onAnimationEnded(getId());
-        }
+        //Disabling touch events when it does the animation
+        isAnimInProgress = true;
 
+        getAnimationMask().bringToFront();
+        getAnimationMask().setVisibility(View.VISIBLE);
+
+        //Start the animation!
+        animator.start();
     }
 
     @Override
@@ -101,24 +97,18 @@ public class CircularRevealContainerImpl extends FrameLayout implements Circular
         getAnimationMask().setVisibility(View.GONE);
     }
 
-    private Animator assembleAnimator(ButtonCRevealAnimationData data, ButtonAnimationEndListener animEndListener) throws OSNotSupportedException {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private Animator assembleAnimator(ButtonCRevealAnimationData data, ButtonAnimationEndListener animEndListener) {
 
-        Animator anim = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int endRadius = (int) Math.hypot(getWidth(), getHeight());
-            anim = ViewAnimationUtils.createCircularReveal(getAnimationMask(), data.getX(), data.getY(), data.getAnimStartRadius(), endRadius);
-        } else {
-            throw new OSNotSupportedException();
-        }
+        int endRadius = (int) Math.hypot(getWidth(), getHeight());
+        Animator anim = ViewAnimationUtils.createCircularReveal(getAnimationMask(), data.getX(), data.getY(), data.getAnimStartRadius(), endRadius);
+
 
         if (data.getAnimDuration() != null) {
             anim.setDuration(data.getAnimDuration());
         } else {
             anim.setDuration(ANIM_DURATION);
         }
-
-        getAnimationMask().bringToFront();
-        getAnimationMask().setVisibility(View.VISIBLE);
 
         anim.addListener(new Animator.AnimatorListener() {
             @Override
@@ -132,7 +122,9 @@ public class CircularRevealContainerImpl extends FrameLayout implements Circular
                     Log.d(TAG, "onAnimationEnd AnimatedLoadingButton");
                 }
                 isAnimInProgress = false;
-                animEndListener.onAnimationEnded(getId());
+                if (animEndListener != null) {
+                    animEndListener.onAnimationEnded(getId());
+                }
             }
 
             @Override

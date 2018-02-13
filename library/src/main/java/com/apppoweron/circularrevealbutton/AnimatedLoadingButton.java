@@ -10,10 +10,12 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -80,13 +82,21 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         //Initializing ButtonColorProvider
         mButtonColorProvider = new ButtonColorProvider(this);
 
+        //Required to inline the button's text
         setMaxLines(1);
 
         //Creating gradient drawable from shape
-        mGradientDrawable = (GradientDrawable)
-                ContextCompat.getDrawable(context, R.drawable.button_shape_default).getConstantState().newDrawable().mutate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mGradientDrawable = (GradientDrawable)
+                    ContextCompat.getDrawable(context, R.drawable.button_shape_default).getConstantState().newDrawable().mutate();
+        } else {
+            mGradientDrawable = (GradientDrawable)
+                    ContextCompat.getDrawable(context, R.drawable.button_shape_default).mutate();
+        }
 
-        mGradientDrawable.setColor(mButtonColorProvider.getButtonOriginalColorId());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mGradientDrawable.setColor(mButtonColorProvider.getButtonOriginalColorId());
+        }
 
         TypedArray typedArray;
         if (attrs != null) {
@@ -103,7 +113,8 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             mIsCircularRevealEnabled = typedArray.getBoolean(R.styleable.CircularRevealButton_isAnimEnabled, false);
 
             if (typedArray.getInt(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
-                mGradientDrawable.setColor(typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0));
+                int bgColor = typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0);
+                mGradientDrawable.setColor(bgColor);
             }
 
             typedArray.recycle();
@@ -176,7 +187,6 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             startExpandAnimation(listener);
         }
     }
-
 
     /**
      * Expanding button animation
@@ -339,20 +349,53 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         mCircularRevealContainer = container;
     }
 
-    private void startCircularReveal(int containerId, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
+    public void startCircularReveal() throws CircularRevealContainerNotFoundException {
+        startCircularReveal(mCircularRevealContainer, null);
+    }
+
+    public void startCircularReveal(CircularRevealContainer container) throws CircularRevealContainerNotFoundException {
+        startCircularReveal(container, null);
+    }
+
+    public void startCircularReveal(ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
+        startCircularReveal(mCircularRevealContainer, animEndListener);
+    }
+
+    public void startCircularReveal(int containerId, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
+        startCircularReveal((CircularRevealContainer) UIHierarchyUtil.getViewByIdInParents(containerId, this), animEndListener);
+    }
+
+    public void startCircularReveal(CircularRevealContainer container, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
         mState = State.IDLE;
         mAnimatedDrawable.stop();
-
-        if (mCircularRevealContainer != null) {
-            startCircularReveal(mCircularRevealContainer, animEndListener);
-        } else {
-            startCircularReveal((CircularRevealContainer) UIHierarchyUtil.getViewByIdInParents(containerId, this), animEndListener);
+        try {
+            startCircularRevealAnimationOnContainer(container, animEndListener);
+        } catch (OSNotSupportedException e) {
+            if (isDebugMessagesEnabled) {
+                Log.e(TAG, "Version of the current device is lower than Lollipop!");
+            }
+            if (animEndListener != null) {
+                animEndListener.onAnimationEnded(getId());
+            }
+            invalidate();
         }
     }
 
-    private void startCircularReveal(CircularRevealContainer container, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
+    private void startCircularRevealAnimationOnContainer(CircularRevealContainer container, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException, OSNotSupportedException {
         if (container != null) {
-            container.startCircularRevealAnimation(new ButtonCRevealAnimationData.ButtonDataBuilder(this, container).animColor(this).build(), animEndListener);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                container.startCircularRevealAnimation(new ButtonCRevealAnimationData.ButtonDataBuilder(this, container)
+                        .animColor(this)
+                        .animDuration(mCircularRevealAnimDuration)
+                        .build(), animEndListener);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                container.startCircularRevealAnimation(new ButtonCRevealAnimationData.ButtonDataBuilder(this, container)
+                        .animColor(mButtonColorProvider.getButtonOriginalColorId())
+                        .animDuration(mCircularRevealAnimDuration)
+                        .build(), animEndListener);
+            } else {
+                throw new OSNotSupportedException();
+            }
         } else {
             throw new CircularRevealContainerNotFoundException();
         }
