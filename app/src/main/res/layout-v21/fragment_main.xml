@@ -17,9 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
+            android:background="@color/test_btn_secondary_color"
             android:text="Standard loading button 1"
-            android:textColor="@android:color/white"
-            app:buttonBackgroundColor="@color/test_btn_secondary_color" />
+            android:textColor="@android:color/white" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_standard_2_btn"
@@ -37,9 +37,9 @@
             android:layout_gravity="center_horizontal"
 
             android:layout_marginTop="15dp"
+            android:background="@color/test_btn_secondary_color"
             android:text="Circular reveal button 1"
             android:textColor="@android:color/holo_blue_light"
-            app:buttonBackgroundColor="@color/test_btn_secondary_color"
             app:isAnimEnabled="true"
             app:requiredOffset="21" />
 
@@ -48,11 +48,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-
             android:layout_marginTop="15dp"
+            android:background="@color/test_btn_color"
             android:text="Circular reveal button 2"
             android:textColor="@android:color/holo_red_dark"
-            app:buttonBackgroundColor="@color/test_btn_color"
+            app:animDuration="10000"
             app:isAnimEnabled="true" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
@@ -62,9 +62,9 @@
             android:layout_gravity="center_horizontal"
 
             android:layout_marginTop="15dp"
+            android:background="@color/test_btn_color_3"
             android:text="Hybrid usage button"
-            android:textColor="@android:color/holo_red_dark"
-            app:buttonBackgroundColor="@color/test_btn_color_3" />
+            android:textColor="@android:color/holo_red_dark" />
 
     </LinearLayout>
 

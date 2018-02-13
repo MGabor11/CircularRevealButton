@@ -1,4 +1,4 @@
-package com.apppoweron.circularrevealbutton.container;
+package com.apppoweron.circularrevealbutton;
 
 class OSNotSupportedException extends Exception {
 

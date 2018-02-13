@@ -1,10 +1,9 @@
 package com.apppoweron.circularrevealbutton.container;
 
-import android.annotation.TargetApi;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-
-import com.apppoweron.circularrevealbutton.AnimatedLoadingButton;
+import android.support.annotation.RequiresApi;
+import android.widget.Button;
 
 /**
  * This class responsible for get required data to create the circular reveal animation
@@ -27,6 +26,7 @@ public class ButtonCRevealAnimationData {
         this.y = builder.y;
         this.animColor = builder.animColor;
         this.buttonRadius = builder.buttonRadius;
+        this.animDuration = builder.animDuration;
     }
 
     public int getButtonId() {
@@ -58,10 +58,11 @@ public class ButtonCRevealAnimationData {
         private int x;
         private int y;
         private Integer animColor;
+        private Integer animDuration;
         private int buttonRadius;
 
 
-        public ButtonDataBuilder(AnimatedLoadingButton button, CircularRevealContainer container) {
+        public ButtonDataBuilder(Button button, CircularRevealContainer container) {
             this.buttonRadius = button.getHeight() / 2;
             this.buttonId = button.getId();
 
@@ -73,20 +74,24 @@ public class ButtonCRevealAnimationData {
             button.getLocationInWindow(buttonLocation);
             container.getLocationInWindow(containerLocation);
 
-            //Log.d(TAG, "calculation over");
-
             this.y = buttonLocation[1] + this.buttonRadius - containerLocation[1];
         }
 
-        @TargetApi(Build.VERSION_CODES.N)
-        public ButtonDataBuilder animColor(AnimatedLoadingButton button) {
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public ButtonDataBuilder animColor(Button button) {
             GradientDrawable drawable = (GradientDrawable) button.getBackground();
-            this.animColor = drawable.getColor().getDefaultColor();
+            animColor(drawable.getColor().getDefaultColor());
             return this;
         }
 
         public ButtonDataBuilder animColor(int color) {
             this.animColor = color;
+            return this;
+        }
+
+        public ButtonDataBuilder animDuration(Integer animDuration) {
+            this.animDuration = animDuration;
             return this;
         }
 
