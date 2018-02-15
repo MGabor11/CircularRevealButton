@@ -52,7 +52,7 @@
             android:background="@color/test_btn_color"
             android:text="Circular reveal button 2"
             android:textColor="@android:color/holo_red_dark"
-            app:animDuration="10000"
+            app:circularRevealAnimDuration="10000"
             app:isAnimEnabled="true" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
