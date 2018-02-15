@@ -32,7 +32,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private static final byte DEFAULT_REQUIRED_OFFSET = 20;
     private static final byte DEFAULT_PROGRESS_WIDTH = 8;
-    private static final short BUTTON_DIMENSION_CHANGING_TIME_IN_MS = 3000;
+    private static final short DEFAULT_EXPANSION_TIME_IN_MS = 3000;
 
     private enum State {
         PROGRESS, IDLE
@@ -49,6 +49,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private State mState = State.IDLE;
     private Integer mCircularRevealAnimDuration;
+    private int mExpansionAnimDuration;
     private boolean mIsSizingInProgress;
     private boolean mIsCircularRevealEnabled;
 
@@ -107,9 +108,15 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
             mRequiredOffset = (byte) typedArray.getInt(R.styleable.CircularRevealButton_requiredOffset, DEFAULT_REQUIRED_OFFSET);
             mProgressWidth = (byte) typedArray.getInt(R.styleable.CircularRevealButton_progressWidth, DEFAULT_PROGRESS_WIDTH);
-            if (typedArray.getInt(R.styleable.CircularRevealButton_animDuration, 0) != 0) {
-                mCircularRevealAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_animDuration, 0);
+            if (typedArray.getInt(R.styleable.CircularRevealButton_circularRevealAnimDuration, 0) != 0) {
+                mCircularRevealAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_circularRevealAnimDuration, 0);
             }
+            if (typedArray.getInt(R.styleable.CircularRevealButton_expansionAnimDuration, 0) != 0) {
+                mExpansionAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_expansionAnimDuration, 0);
+            } else {
+                mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
+            }
+
             mIsCircularRevealEnabled = typedArray.getBoolean(R.styleable.CircularRevealButton_isAnimEnabled, false);
 
             if (typedArray.getInt(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
@@ -121,6 +128,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         } else {
             mRequiredOffset = DEFAULT_REQUIRED_OFFSET;
             mProgressWidth = DEFAULT_PROGRESS_WIDTH;
+            mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
         }
 
         setBackground(mGradientDrawable);
@@ -223,7 +231,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private AnimatorSet getButtonSizingAnimatorSet(boolean isExpansion) {
         AnimatorSet result = new AnimatorSet();
-        result.setDuration(BUTTON_DIMENSION_CHANGING_TIME_IN_MS);
+        result.setDuration(mExpansionAnimDuration);
         if (!isExpansion) {
             result.playTogether(getCornerAnimator(), getWidthAnimator(getWidth(), mRequiredSize),
                     getHeightAnimator(getHeight(), mRequiredSize), getTextAlphaAnimation(isExpansion));
@@ -335,6 +343,15 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         } else {
             mAnimatedDrawable.draw(canvas);
         }
+    }
+
+    //TODO create a chain from these settings
+    public void setExpansionAnimDuration(int duration) {
+        mExpansionAnimDuration = duration;
+    }
+
+    public void setCircularRevealAnimDuration(int duration) {
+        mCircularRevealAnimDuration = duration;
     }
 
     public void setAnimationStartListener(ButtonAnimationStartListener listener) {

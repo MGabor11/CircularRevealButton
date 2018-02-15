@@ -5,7 +5,8 @@
         <attr name="requiredOffset" format="integer" />
         <attr name="progressWidth" format="integer" />
         <attr name="isAnimEnabled" format="boolean" />
-        <attr name="animDuration" format="integer" />
+        <attr name="circularRevealAnimDuration" format="integer" />
+        <attr name="expansionAnimDuration" format="integer"/>
         <attr name="buttonBackgroundColor" format="color" />
     </declare-styleable>
 
