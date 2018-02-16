@@ -19,7 +19,8 @@
             android:layout_marginTop="20dp"
             android:background="@color/test_btn_secondary_color"
             android:text="Standard loading button 1"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            app:progressColor="#F00" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_standard_2_btn"
