@@ -120,15 +120,15 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
                 mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
             }
 
-            if (typedArray.getInt(R.styleable.CircularRevealButton_progressColor, 0) != 0) {
-                mProgressColor = typedArray.getInt(R.styleable.CircularRevealButton_progressColor, 0);
+            if (typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0) != 0) {
+                mProgressColor = typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0);
             } else {
                 mProgressColor = DEFAULT_PROGRESS_COLOR;
             }
 
             mIsCircularRevealEnabled = typedArray.getBoolean(R.styleable.CircularRevealButton_isAnimEnabled, false);
 
-            if (typedArray.getInt(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
+            if (typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
                 int bgColor = typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0);
                 mGradientDrawable.setColor(bgColor);
             }
@@ -358,6 +358,10 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
     //TODO create a chain from these settings
     public void setExpansionAnimDuration(int duration) {
         mExpansionAnimDuration = duration;
+    }
+
+    public void setProgressColor(int progressColor) {
+        mProgressColor = progressColor;
     }
 
     public void setCircularRevealAnimDuration(int duration) {
