@@ -10,6 +10,7 @@ public class SplashActivity extends BaseActivity {
 
     private static final short BUTTON_START_DELAY = 500;
     private static final short EXPANSION_ANIM_DURATION = 1500;
+    private static final short PROGRESS_DURATION = 1000;
 
     private Handler mSplashDurationHandler;
 
@@ -35,7 +36,7 @@ public class SplashActivity extends BaseActivity {
 
                 // close splash activity
                 finish();
-            }), EXPANSION_ANIM_DURATION + 500);
+            }), EXPANSION_ANIM_DURATION + PROGRESS_DURATION);
         }, BUTTON_START_DELAY);
 
 
