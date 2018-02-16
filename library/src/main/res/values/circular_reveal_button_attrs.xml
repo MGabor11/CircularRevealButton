@@ -8,6 +8,7 @@
         <attr name="circularRevealAnimDuration" format="integer" />
         <attr name="expansionAnimDuration" format="integer"/>
         <attr name="buttonBackgroundColor" format="color" />
+        <attr name="progressColor" format="color" />
     </declare-styleable>
 
 </resources>
