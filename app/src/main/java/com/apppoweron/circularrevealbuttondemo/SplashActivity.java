@@ -1,14 +1,15 @@
 package com.apppoweron.circularrevealbuttondemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.apppoweron.circularrevealbutton.AnimatedLoadingButton;
-import com.apppoweron.circularrevealbutton.container.CircularRevealContainerNotFoundException;
 
 public class SplashActivity extends BaseActivity {
 
-    private static final short BUTTON_START_DELAY = 300;
+    private static final short BUTTON_START_DELAY = 500;
+    private static final short EXPANSION_ANIM_DURATION = 1500;
 
     private Handler mSplashDurationHandler;
 
@@ -23,27 +24,19 @@ public class SplashActivity extends BaseActivity {
         super.onResume();
         AnimatedLoadingButton splashButton = findViewById(R.id.splash_anim_btn);
 
-
         mSplashDurationHandler = new Handler();
 
-        splashButton.setExpansionAnimDuration(1500);
-        mSplashDurationHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                splashButton.callOnClick();
-                mSplashDurationHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            splashButton.startProgressEndAnimation(0);
-                        } catch (CircularRevealContainerNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },1700);
-            }
-        }, BUTTON_START_DELAY);
+        splashButton.setExpansionAnimDuration(EXPANSION_ANIM_DURATION);
+        mSplashDurationHandler.postDelayed(() -> {
+            splashButton.callOnClick();
+            mSplashDurationHandler.postDelayed(() -> splashButton.startProgressEndAnimation(viewId -> {
+                // Start home activity
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
 
+                // close splash activity
+                finish();
+            }), EXPANSION_ANIM_DURATION + 500);
+        }, BUTTON_START_DELAY);
 
 
     }

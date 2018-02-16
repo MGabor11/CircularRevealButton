@@ -173,7 +173,24 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         mState = State.PROGRESS;
         setClickable(false);
 
-        animateButtonDimensions(isExpansionAnim(listener));
+        animateButtonDimensions(isExpansionAnim(listener), listener);
+    }
+
+    public void startProgressEndAnimation() {
+        startProgressEndAnimation(mAnimationEndListener);
+    }
+
+    /**
+     * Start expanding animation, it can be circular reveal or expanding
+     */
+    public void startProgressEndAnimation(ButtonAnimationEndListener listener) {
+        try {
+            startProgressEndAnimation(0, listener);
+        } catch (CircularRevealContainerNotFoundException e) {
+            if (isDebugMessagesEnabled) {
+                Log.e(TAG, "Container not found!");
+            }
+        }
     }
 
     /**
@@ -210,15 +227,27 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         mAnimatedDrawable.stop();
         setClickable(true);
 
-        animateButtonDimensions(isExpansionAnim(listener));
+        animateButtonDimensions(isExpansionAnim(listener), listener);
     }
 
-    private void animateButtonDimensions(boolean isExpansion) {
-        if (!isExpansion && mAnimationStartListener != null) {
-            mAnimationStartListener.onAnimationStarted(getId());
+    private void animateButtonDimensions(boolean isExpansion, BaseAnimationListener listener) {
+
+        if (!isExpansion && listener != null && listener instanceof ButtonAnimationStartListener) {
+            ((ButtonAnimationStartListener) listener).onAnimationStarted(getId());
         }
         mIsSizingInProgress = true;
-        getButtonSizingAnimatorSet(isExpansion).start();
+        AnimatorSet animatorSet = getButtonSizingAnimatorSet(isExpansion);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIsSizingInProgress = false;
+
+                if (isExpansion && listener != null && listener instanceof ButtonAnimationEndListener) {
+                    ((ButtonAnimationEndListener) listener).onAnimationEnded(getId());
+                }
+            }
+        });
+        animatorSet.start();
     }
 
     private <T extends BaseAnimationListener> boolean isExpansionAnim(T listener) {
@@ -239,15 +268,6 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             result.playTogether(getCornerAnimator(), getWidthAnimator(mRequiredSize, mOriginalWidth),
                     getHeightAnimator(mRequiredSize, mOriginalHeight), getTextAlphaAnimation(isExpansion));
         }
-        result.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsSizingInProgress = false;
-                if (isExpansion && mAnimationEndListener != null) {
-                    mAnimationEndListener.onAnimationEnded(getId());
-                }
-            }
-        });
         return result;
     }
 
