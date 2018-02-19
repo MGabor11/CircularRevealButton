@@ -15,13 +15,13 @@ This library is created, because I would like to create an own loading button, w
         <attr name="progressColor" format="color" />
 ```
 
-requiredOffset: Offset of the loading spinner from the edge of the circle in px
-progressWidth: Width of the progress indicator
-isAnimEnabled: Flag for circular reveal animation, in this case button starts circular reveal animation by default on end of progress
-circularRevealAnimDuration: Duration of circular reveal animation in milliseconds
-expansionAnimDuration: Duration of the compression and expansion animation of the loading button
-buttonBackgroundColor: It works same as android:background, it has to be used under API 21
-progressColor: Color of button's progress indicator
+- requiredOffset: Offset of the loading spinner from the edge of the circle in px
+- progressWidth: Width of the progress indicator
+- isAnimEnabled: Flag for circular reveal animation, in this case button starts circular reveal animation by default on end of progress
+- circularRevealAnimDuration: Duration of circular reveal animation in milliseconds
+- expansionAnimDuration: Duration of the compression and expansion animation of the loading button
+- buttonBackgroundColor: It works same as android:background, it has to be used under API 21
+- progressColor: Color of button's progress indicator
 
 ### Expansion animation
 In this case you have to add AnimatedLoadingButton class to your layout:
