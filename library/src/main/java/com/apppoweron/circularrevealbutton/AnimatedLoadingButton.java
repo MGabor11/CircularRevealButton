@@ -234,7 +234,9 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         }
 
         mState = State.IDLE;
-        mAnimatedDrawable.stop();
+        if (mAnimatedDrawable != null) {
+            mAnimatedDrawable.stop();
+        }
         setClickable(true);
 
         animateButtonDimensions(isExpansionAnim(listener), listener);
@@ -418,7 +420,9 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     public void startCircularReveal(CircularRevealContainer container, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
         mState = State.IDLE;
-        mAnimatedDrawable.stop();
+        if (mAnimatedDrawable != null) {
+            mAnimatedDrawable.stop();
+        }
         try {
             startCircularRevealAnimationOnContainer(container, animEndListener);
         } catch (OSNotSupportedException e) {
@@ -451,6 +455,4 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             throw new CircularRevealContainerNotFoundException();
         }
     }
-
-
 }

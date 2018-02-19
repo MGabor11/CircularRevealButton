@@ -1,5 +1,6 @@
 package com.apppoweron.circularrevealbuttondemo;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     private static final int DEFAULT_CONTAINER_ID = -1;
 
     private BackPressListener mBackPressListener;
+    private FragmentTransaction mDaleayedTransaction;
+    private boolean mIsSavedInstanceStateCalled;
 
     private void addFragment(Fragment fragment) throws NoContainerException {
         if (!hasContainerId()) {
@@ -18,13 +21,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         getSupportFragmentManager().beginTransaction().add(getContainerId(), fragment, fragment.getClass().getSimpleName() + "_TAG").commit();
     }
 
-    private void repleaceFragment(Fragment fragment, boolean needToBackStack) throws NoContainerException {
+    private void replaceFragment(Fragment fragment, boolean needToBackStack) throws NoContainerException {
         if (!hasContainerId()) {
             throw new NoContainerException();
         }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(getContainerId(), fragment, fragment.getClass().getSimpleName() + "_TAG");
         if (needToBackStack) {
             transaction.addToBackStack(null);
+        }
+        if (mIsSavedInstanceStateCalled) {
+            mDaleayedTransaction = transaction;
+            return;
         }
         transaction.commit();
     }
@@ -40,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
                 addFragment(fragment);
                 break;
             case REPLACE:
-                repleaceFragment(fragment, needToBackStack);
+                replaceFragment(fragment, needToBackStack);
                 break;
         }
     }
@@ -88,13 +95,27 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public void onNewFragmentSelected(Fragment fragment, boolean replaceIt, boolean needToBackStack) throws NoContainerException {
-        if(replaceIt){
-            loadFragment(fragment, FragmentLoadType.REPLACE,needToBackStack);
-        }else{
-            loadFragment(fragment, FragmentLoadType.ADD,needToBackStack);
+        if (replaceIt) {
+            loadFragment(fragment, FragmentLoadType.REPLACE, needToBackStack);
+        } else {
+            loadFragment(fragment, FragmentLoadType.ADD, needToBackStack);
         }
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        mIsSavedInstanceStateCalled = true;
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsSavedInstanceStateCalled = false;
+        if(mDaleayedTransaction != null) {
+            mDaleayedTransaction.commit();
+            mDaleayedTransaction = null;
+        }
+    }
 }
