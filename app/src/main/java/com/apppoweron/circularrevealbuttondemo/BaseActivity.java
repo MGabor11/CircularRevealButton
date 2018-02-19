@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 public abstract class BaseActivity extends AppCompatActivity implements FragmentCommunicator {
 
@@ -34,6 +35,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             return;
         }
         transaction.commit();
+
+        if (needToBackStack) {
+            switchBackButton(true);
+        }
     }
 
     public void loadFragment(Fragment fragment, FragmentLoadType loadType) throws NoContainerException {
@@ -62,6 +67,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            switchBackButton(false);
+        }
         if (mBackPressListener != null) {
             mBackPressListener.onBackPressed();
         } else {
@@ -113,9 +121,34 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     protected void onResume() {
         super.onResume();
         mIsSavedInstanceStateCalled = false;
-        if(mDaleayedTransaction != null) {
+        if (mDaleayedTransaction != null) {
             mDaleayedTransaction.commit();
             mDaleayedTransaction = null;
         }
     }
+
+    /**
+     * Show backbutton on toolbar
+     *
+     * @param turnOn show it or not
+     */
+    private void switchBackButton(boolean turnOn) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(turnOn);
+            getSupportActionBar().setHomeButtonEnabled(turnOn);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
 }
