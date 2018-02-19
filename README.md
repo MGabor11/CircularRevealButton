@@ -1,1 +1,1 @@
-# CircularRevealButton - V 0.0.2
+# CircularRevealButton - V 0.1.0
