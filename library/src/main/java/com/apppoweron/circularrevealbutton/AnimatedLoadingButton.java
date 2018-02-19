@@ -32,7 +32,8 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private static final byte DEFAULT_REQUIRED_OFFSET = 20;
     private static final byte DEFAULT_PROGRESS_WIDTH = 8;
-    private static final short BUTTON_DIMENSION_CHANGING_TIME_IN_MS = 3000;
+    private static final short DEFAULT_EXPANSION_TIME_IN_MS = 3000;
+    private static final int DEFAULT_PROGRESS_COLOR = Color.WHITE;
 
     private enum State {
         PROGRESS, IDLE
@@ -49,8 +50,10 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private State mState = State.IDLE;
     private Integer mCircularRevealAnimDuration;
+    private int mExpansionAnimDuration;
     private boolean mIsSizingInProgress;
     private boolean mIsCircularRevealEnabled;
+    private int mProgressColor;
 
     private GradientDrawable mGradientDrawable;
     private CircularAnimatedDrawable mAnimatedDrawable;
@@ -107,12 +110,25 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
             mRequiredOffset = (byte) typedArray.getInt(R.styleable.CircularRevealButton_requiredOffset, DEFAULT_REQUIRED_OFFSET);
             mProgressWidth = (byte) typedArray.getInt(R.styleable.CircularRevealButton_progressWidth, DEFAULT_PROGRESS_WIDTH);
-            if (typedArray.getInt(R.styleable.CircularRevealButton_animDuration, 0) != 0) {
-                mCircularRevealAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_animDuration, 0);
+            if (typedArray.getInt(R.styleable.CircularRevealButton_circularRevealAnimDuration, 0) != 0) {
+                mCircularRevealAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_circularRevealAnimDuration, 0);
             }
+
+            if (typedArray.getInt(R.styleable.CircularRevealButton_expansionAnimDuration, 0) != 0) {
+                mExpansionAnimDuration = typedArray.getInt(R.styleable.CircularRevealButton_expansionAnimDuration, 0);
+            } else {
+                mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
+            }
+
+            if (typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0) != 0) {
+                mProgressColor = typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0);
+            } else {
+                mProgressColor = DEFAULT_PROGRESS_COLOR;
+            }
+
             mIsCircularRevealEnabled = typedArray.getBoolean(R.styleable.CircularRevealButton_isAnimEnabled, false);
 
-            if (typedArray.getInt(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
+            if (typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
                 int bgColor = typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0);
                 mGradientDrawable.setColor(bgColor);
             }
@@ -121,6 +137,8 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         } else {
             mRequiredOffset = DEFAULT_REQUIRED_OFFSET;
             mProgressWidth = DEFAULT_PROGRESS_WIDTH;
+            mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
+            mProgressColor = DEFAULT_PROGRESS_COLOR;
         }
 
         setBackground(mGradientDrawable);
@@ -165,7 +183,24 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         mState = State.PROGRESS;
         setClickable(false);
 
-        animateButtonDimensions(isExpansionAnim(listener));
+        animateButtonDimensions(isExpansionAnim(listener), listener);
+    }
+
+    public void startProgressEndAnimation() {
+        startProgressEndAnimation(mAnimationEndListener);
+    }
+
+    /**
+     * Start expanding animation, it can be circular reveal or expanding
+     */
+    public void startProgressEndAnimation(ButtonAnimationEndListener listener) {
+        try {
+            startProgressEndAnimation(0, listener);
+        } catch (CircularRevealContainerNotFoundException e) {
+            if (isDebugMessagesEnabled) {
+                Log.e(TAG, "Container not found!");
+            }
+        }
     }
 
     /**
@@ -199,18 +234,32 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         }
 
         mState = State.IDLE;
-        mAnimatedDrawable.stop();
+        if (mAnimatedDrawable != null) {
+            mAnimatedDrawable.stop();
+        }
         setClickable(true);
 
-        animateButtonDimensions(isExpansionAnim(listener));
+        animateButtonDimensions(isExpansionAnim(listener), listener);
     }
 
-    private void animateButtonDimensions(boolean isExpansion) {
-        if (!isExpansion && mAnimationStartListener != null) {
-            mAnimationStartListener.onAnimationStarted(getId());
+    private void animateButtonDimensions(boolean isExpansion, BaseAnimationListener listener) {
+
+        if (!isExpansion && listener != null && listener instanceof ButtonAnimationStartListener) {
+            ((ButtonAnimationStartListener) listener).onAnimationStarted(getId());
         }
         mIsSizingInProgress = true;
-        getButtonSizingAnimatorSet(isExpansion).start();
+        AnimatorSet animatorSet = getButtonSizingAnimatorSet(isExpansion);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIsSizingInProgress = false;
+
+                if (isExpansion && listener != null && listener instanceof ButtonAnimationEndListener) {
+                    ((ButtonAnimationEndListener) listener).onAnimationEnded(getId());
+                }
+            }
+        });
+        animatorSet.start();
     }
 
     private <T extends BaseAnimationListener> boolean isExpansionAnim(T listener) {
@@ -223,7 +272,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     private AnimatorSet getButtonSizingAnimatorSet(boolean isExpansion) {
         AnimatorSet result = new AnimatorSet();
-        result.setDuration(BUTTON_DIMENSION_CHANGING_TIME_IN_MS);
+        result.setDuration(mExpansionAnimDuration);
         if (!isExpansion) {
             result.playTogether(getCornerAnimator(), getWidthAnimator(getWidth(), mRequiredSize),
                     getHeightAnimator(getHeight(), mRequiredSize), getTextAlphaAnimation(isExpansion));
@@ -231,15 +280,6 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             result.playTogether(getCornerAnimator(), getWidthAnimator(mRequiredSize, mOriginalWidth),
                     getHeightAnimator(mRequiredSize, mOriginalHeight), getTextAlphaAnimation(isExpansion));
         }
-        result.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsSizingInProgress = false;
-                if (isExpansion && mAnimationEndListener != null) {
-                    mAnimationEndListener.onAnimationEnded(getId());
-                }
-            }
-        });
         return result;
     }
 
@@ -322,7 +362,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
             mAnimatedDrawable = new CircularAnimatedDrawable(this,
                     mProgressWidth,
-                    Color.WHITE);
+                    mProgressColor);
 
             int left = mRequiredOffset;
             int right = getWidth() - mRequiredOffset;
@@ -335,6 +375,19 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
         } else {
             mAnimatedDrawable.draw(canvas);
         }
+    }
+
+    //TODO create a chain from these settings
+    public void setExpansionAnimDuration(int duration) {
+        mExpansionAnimDuration = duration;
+    }
+
+    public void setProgressColor(int progressColor) {
+        mProgressColor = progressColor;
+    }
+
+    public void setCircularRevealAnimDuration(int duration) {
+        mCircularRevealAnimDuration = duration;
     }
 
     public void setAnimationStartListener(ButtonAnimationStartListener listener) {
@@ -367,7 +420,9 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
 
     public void startCircularReveal(CircularRevealContainer container, ButtonAnimationEndListener animEndListener) throws CircularRevealContainerNotFoundException {
         mState = State.IDLE;
-        mAnimatedDrawable.stop();
+        if (mAnimatedDrawable != null) {
+            mAnimatedDrawable.stop();
+        }
         try {
             startCircularRevealAnimationOnContainer(container, animEndListener);
         } catch (OSNotSupportedException e) {
@@ -400,6 +455,4 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             throw new CircularRevealContainerNotFoundException();
         }
     }
-
-
 }
