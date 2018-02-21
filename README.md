@@ -1,7 +1,7 @@
 # CircularRevealButton - V 0.1.0
 
 ## Core functions
-I created an own loading button, which able to use compression, expansion, and circular reveal animations. If user tap on AnimatedLoadingButton it starts to compress, and it stops, when it's shape seems like a circle. It can stops the process on two ways. First scenario is expanding the button, until it reaches it's original width. Second way is the circular reveal animation, which can be necessary if you want to navigate to a new screen. 
+This loading button is able to use compression, expansion, and circular reveal animations. If user tap on AnimatedLoadingButton it starts to compress, and it stops, when it's shape seems like a circle. It can stops the process on two ways. First scenario is expanding the button, until it reaches it's original width. Second way is the circular reveal animation, which can be necessary if you want to navigate to a new screen. 
 
 ## Usage
 ### Button attributes
@@ -26,9 +26,7 @@ I created an own loading button, which able to use compression, expansion, and c
 ### Expansion animation
 In this case you have to add AnimatedLoadingButton class to your layout:
 
-![expand1](https://user-images.githubusercontent.com/36195029/36417867-5a105a54-162d-11e8-98cc-2a0c323324ce.png)
-
-![expand2](https://user-images.githubusercontent.com/36195029/36417876-64e5afb0-162d-11e8-9f11-27a8dc36fdb7.png)
+![video1](https://user-images.githubusercontent.com/36195029/36480272-00b366ec-170c-11e8-8824-f711fce454de.gif)
 
 ```XML
  <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
@@ -46,9 +44,7 @@ In this case you have to add AnimatedLoadingButton class to your layout:
 ### Circular reveal animation
 If you would like to use circular reveal animation with your button, you have to use CircularRevealContainer as a container view:
 
-![creveal1](https://user-images.githubusercontent.com/36195029/36417903-7549b8ec-162d-11e8-8b6b-a24ed1813752.png)
-
-![creveal2](https://user-images.githubusercontent.com/36195029/36417909-7c5c1a12-162d-11e8-867b-9cd6d7d8ab36.png)
+![video2](https://user-images.githubusercontent.com/36195029/36480276-04023c56-170c-11e8-8e11-ad6f3661075c.gif)
 
 ```XML
 <?xml version="1.0" encoding="utf-8"?>
