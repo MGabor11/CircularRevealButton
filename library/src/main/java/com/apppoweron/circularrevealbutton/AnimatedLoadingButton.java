@@ -8,7 +8,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -33,7 +32,6 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
     private static final byte DEFAULT_REQUIRED_OFFSET = 20;
     private static final byte DEFAULT_PROGRESS_WIDTH = 8;
     private static final short DEFAULT_EXPANSION_TIME_IN_MS = 3000;
-    private static final int DEFAULT_PROGRESS_COLOR = Color.WHITE;
 
     private enum State {
         PROGRESS, IDLE
@@ -123,7 +121,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             if (typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0) != 0) {
                 mProgressColor = typedArray.getColor(R.styleable.CircularRevealButton_progressColor, 0);
             } else {
-                mProgressColor = DEFAULT_PROGRESS_COLOR;
+                mProgressColor = mButtonColorProvider.getButtonTextColor();
             }
 
             mIsCircularRevealEnabled = typedArray.getBoolean(R.styleable.CircularRevealButton_isAnimEnabled, false);
@@ -138,7 +136,7 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
             mRequiredOffset = DEFAULT_REQUIRED_OFFSET;
             mProgressWidth = DEFAULT_PROGRESS_WIDTH;
             mExpansionAnimDuration = DEFAULT_EXPANSION_TIME_IN_MS;
-            mProgressColor = DEFAULT_PROGRESS_COLOR;
+            mProgressColor = mButtonColorProvider.getButtonTextColor();
         }
 
         setBackground(mGradientDrawable);

@@ -30,9 +30,13 @@ class ButtonColorProvider {
 
     private String getButtonTextColorHex() {
         if (TextUtils.isEmpty(originalTextColorHex)) {
-            originalTextColorHex = Integer.toHexString(button.getTextColors().getDefaultColor()).substring(2); //Cutting off the first two characters, because it is ARGB
+            originalTextColorHex = Integer.toHexString(getButtonTextColor()).substring(2); //Cutting off the first two characters, because it is ARGB
         }
         return originalTextColorHex;
+    }
+
+    int getButtonTextColor() {
+        return button.getTextColors().getDefaultColor();
     }
 
     int translateAnimatedValueIntoFadingColor(ValueAnimator valueAnimator) {
