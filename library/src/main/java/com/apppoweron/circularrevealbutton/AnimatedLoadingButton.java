@@ -222,6 +222,22 @@ public class AnimatedLoadingButton extends AppCompatButton implements View.OnCli
     }
 
     /**
+     * It returns the state of circular reveal animation
+     * @return the type of end animation, when button ends it's progress, it is a boolean which defines that, circular reveal is enabled
+     */
+    public boolean isCircularRevealEnabled() {
+        return this.mIsCircularRevealEnabled;
+    }
+
+    /**
+     * Method, which set the state of
+     * @param isCircularRevealEnabled it defines the state of circular reveal option
+     */
+    public void setCircularRevealEnabled(boolean isCircularRevealEnabled) {
+        this.mIsCircularRevealEnabled = isCircularRevealEnabled;
+    }
+
+    /**
      * Expanding button animation
      *
      * @param listener listener for end of animation

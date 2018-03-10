@@ -64,7 +64,7 @@
 
             android:layout_marginTop="15dp"
             android:background="@color/test_btn_color_3"
-            android:text="Hybrid usage button"
+            android:text="@string/tap_to_start_standard_animation"
             android:textColor="@android:color/holo_red_dark" />
 
     </LinearLayout>

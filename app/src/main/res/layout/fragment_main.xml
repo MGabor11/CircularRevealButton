@@ -63,7 +63,7 @@
             android:layout_gravity="center_horizontal"
 
             android:layout_marginTop="15dp"
-            android:text="Hybrid usage button"
+            android:text="@string/tap_to_start_standard_animation"
             android:textColor="@android:color/holo_red_dark"
             app:buttonBackgroundColor="@color/test_btn_color_3" />
 

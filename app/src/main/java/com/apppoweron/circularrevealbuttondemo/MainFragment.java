@@ -35,8 +35,21 @@ public class MainFragment extends BaseFragment {
         hybridUsage.setOnClickListener(view1 -> {
             view.postDelayed(() -> {
                 try {
-                    ((AnimatedLoadingButton) view1).startCircularReveal(R.id.main_circular_reveal_container, viewId ->
-                            Toast.makeText(view1.getContext(), "onAnimEnd - " + ((AnimatedLoadingButton) view1).getText(), Toast.LENGTH_LONG).show());
+                    AnimatedLoadingButton button = ((AnimatedLoadingButton) view1);
+                    button.startProgressEndAnimation(R.id.main_circular_reveal_container, viewId -> {
+                        Toast.makeText(view.getContext(), "onAnimEnd - " + button.getText(), Toast.LENGTH_LONG).show();
+
+                        if (button.isCircularRevealEnabled()) {
+                            try {
+                                mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true);
+                            } catch (NoContainerException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            button.setCircularRevealEnabled(true);
+                            button.setText(R.string.tap_to_start_circular_reveal_animation);
+                        }
+                    });
                 } catch (CircularRevealContainerNotFoundException e) {
                     e.printStackTrace();
                 }
