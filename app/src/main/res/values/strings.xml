@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CircularRevealButtonDemo</string>
+    <string name="tap_to_start_standard_animation">Tap to start standard animation</string>
+    <string name="tap_to_start_circular_reveal_animation">Tap to start circular reveal animation</string>
 </resources>
