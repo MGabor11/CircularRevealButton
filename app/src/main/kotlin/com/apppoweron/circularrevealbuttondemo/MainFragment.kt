@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 
 import com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+import com.apppoweron.circularrevealbutton.ButtonAnimationEndListener
 import com.apppoweron.circularrevealbutton.container.CircularRevealContainerNotFoundException
 
 class MainFragment : BaseFragment() {
@@ -27,21 +28,23 @@ class MainFragment : BaseFragment() {
             view.postDelayed({
                 try {
                     val button = view1 as AnimatedLoadingButton
-                    button.startProgressEndAnimation(R.id.main_circular_reveal_container) {
-                        Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
+                    button.startProgressEndAnimation(R.id.main_circular_reveal_container, object : ButtonAnimationEndListener {
+                        override fun onAnimationEnded(viewId: Int) {
+                            Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
 
-                        if (button.isCircularRevealEnabled) {
-                            try {
-                                mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
-                            } catch (e: NoContainerException) {
-                                e.printStackTrace()
+                            if (button.isCircularRevealEnabled) {
+                                try {
+                                    mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
+                                } catch (e: NoContainerException) {
+                                    e.printStackTrace()
+                                }
+
+                            } else {
+                                button.isCircularRevealEnabled = true
+                                button.setText(R.string.tap_to_start_circular_reveal_animation)
                             }
-
-                        } else {
-                            button.isCircularRevealEnabled = true
-                            button.setText(R.string.tap_to_start_circular_reveal_animation)
                         }
-                    }
+                    })
                 } catch (e: CircularRevealContainerNotFoundException) {
                     e.printStackTrace()
                 }
@@ -55,29 +58,31 @@ class MainFragment : BaseFragment() {
     }
 
     private fun getOnClickListener(button: AnimatedLoadingButton): View.OnClickListener {
-               return View.OnClickListener { view ->   Toast.makeText(view.context, "onclick - " + button.text, Toast.LENGTH_LONG).show()
+        return View.OnClickListener { view ->
+            Toast.makeText(view.context, "onclick - " + button.text, Toast.LENGTH_LONG).show()
             view.postDelayed({
-
                 try {
-                    button.startProgressEndAnimation(R.id.main_circular_reveal_container) {
-                        Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
+                    button.startProgressEndAnimation(R.id.main_circular_reveal_container, object : ButtonAnimationEndListener {
+                        override fun onAnimationEnded(viewId: Int) {
+                            Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
 
-                        if (button.id != R.id.main_standard_1_btn && button.id != R.id.main_standard_2_btn) {
-                            try {
-                                mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
-                            } catch (e: NoContainerException) {
-                                e.printStackTrace()
+                            if (button.id != R.id.main_standard_1_btn && button.id != R.id.main_standard_2_btn) {
+                                try {
+                                    mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
+                                } catch (e: NoContainerException) {
+                                    e.printStackTrace()
+                                }
+
                             }
-
                         }
-
-                    }
+                    })
                 } catch (e: CircularRevealContainerNotFoundException) {
                     e.printStackTrace()
                 }
 
 
-            }, 6000)}
+            }, 6000)
+        }
     }
 
     companion object {
