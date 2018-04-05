@@ -16,5 +16,6 @@ ext.libraries = [
         //Android test libraries
         junit                      : "junit:junit:$versions.junit",
         test_runner                : "com.android.support.test:runner:$versions.test_runner",
-        test_espresso_espresso_core: "com.android.support.test.espresso:$versions.test_espresso_espresso_core"
+        test_espresso_espresso_core: "com.android.support.test.espresso:$versions.test_espresso_espresso_core",
+        kotlin                     : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 ]

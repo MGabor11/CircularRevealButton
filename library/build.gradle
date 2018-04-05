@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply from: 'config.gradle'
 
 android {
@@ -33,6 +35,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
 }
 
 dependencies {
@@ -42,4 +48,7 @@ dependencies {
     testImplementation "$libraries.junit"
     androidTestImplementation "$libraries.test_runner"
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //Kotlin
+    implementation "$libraries.kotlin"
 }
