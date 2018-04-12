@@ -1,6 +1,6 @@
 # CircularRevealButton - V 0.2.0
 
-####Important note:
+#### Important note:
 Codebase was changed from Java to Kotlin, which means that project new features will be developed, and maintained in Kotlin.
 
 ## Core functions
