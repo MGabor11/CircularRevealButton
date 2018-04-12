@@ -1,4 +1,7 @@
-# CircularRevealButton - V 0.1.1
+# CircularRevealButton - V 0.2.0
+
+####Important note:
+Codebase was changed from Java to Kotlin, which means that project new features will be developed, and maintained in Kotlin.
 
 ## Core functions
 This loading button is able to use compression, expansion, and circular reveal animations. If user tap on AnimatedLoadingButton it starts to compress, and it stops, when it's shape seems like a circle. It can stops the process on two ways. First scenario is expanding the button, until it reaches it's original width. Second way is the circular reveal animation, which can be necessary if you want to navigate to a new screen. 
