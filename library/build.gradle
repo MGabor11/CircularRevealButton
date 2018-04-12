@@ -1,15 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply from: 'config.gradle'
 
 android {
     compileSdkVersion 27
-
-
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "0.0.1"
+        versionName "0.1.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -17,6 +18,10 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -30,13 +35,20 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    implementation "$libraries.supportAppCompat"
+    testImplementation "$libraries.junit"
+    androidTestImplementation "$libraries.test_runner"
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //Kotlin
+    implementation "$libraries.kotlin"
 }
