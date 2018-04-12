@@ -3,9 +3,7 @@ package com.apppoweron.circularrevealbuttondemo
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-
 import com.apppoweron.circularrevealbutton.AnimatedLoadingButton
-import com.apppoweron.circularrevealbutton.ButtonAnimationEndListener
 
 class SplashActivity : BaseActivity() {
 
@@ -32,15 +30,13 @@ class SplashActivity : BaseActivity() {
         mSplashDurationHandler!!.postDelayed({
             splashButton.callOnClick()
             mSplashDurationHandler!!.postDelayed({
-                splashButton.startProgressEndAnimation(object : ButtonAnimationEndListener {
-                    override fun onAnimationEnded(viewId: Int) {
-                        // Start home activity
-                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                splashButton.startProgressEndAnimation {
+                    // Start home activity
+                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 
-                        // close splash activity
-                        finish()
-                    }
-                })
+                    // close splash activity
+                    finish()
+                }
             }, (EXPANSION_ANIM_DURATION + PROGRESS_DURATION).toLong())
         }, BUTTON_START_DELAY.toLong())
 

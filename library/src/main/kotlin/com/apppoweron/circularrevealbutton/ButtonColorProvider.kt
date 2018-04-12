@@ -31,7 +31,7 @@ internal class ButtonColorProvider(private val button: Button) {
     val buttonTextColor: Int
         get() = button.textColors.defaultColor
 
-    val buttonOriginalColorId: Int
+    val buttonOriginalColorId: Int?
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         get() {
             if (originalColorId == null) {
@@ -54,7 +54,7 @@ internal class ButtonColorProvider(private val button: Button) {
 
                 }
             }
-            return originalColorId!!
+            return originalColorId
         }
 
     fun translateAnimatedValueIntoFadingColor(valueAnimator: ValueAnimator): Int {

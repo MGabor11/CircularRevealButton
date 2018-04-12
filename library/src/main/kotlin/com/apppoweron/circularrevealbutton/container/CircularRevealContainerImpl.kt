@@ -10,12 +10,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.FrameLayout
-import com.apppoweron.circularrevealbutton.ButtonAnimationEndListener
 import com.apppoweron.circularrevealbutton.R
+import com.apppoweron.circularrevealbutton.util.DebugUtil
 
 class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
 
-    private var isDebugMessagesEnabled: Boolean = false
+    companion object {
+        private const val TAG = "CircularRevealContainer"
+        private const val ANIM_DURATION = 2000
+    }
+
     private var isAnimInProgress: Boolean = false
 
     private val animationMask: View
@@ -40,17 +44,6 @@ class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.circular_reveal_container_view, this)
-        if (attrs != null) {
-            val typedArray = context.theme.obtainStyledAttributes(
-                    attrs,
-                    R.styleable.CircularRevealContainer,
-                    0, 0)
-            isDebugMessagesEnabled = typedArray.getBoolean(R.styleable.CircularRevealContainer_isDebuggable, IS_DEBUG_MESSAGE_ENABLED)
-            typedArray.recycle()
-        } else {
-            isDebugMessagesEnabled = IS_DEBUG_MESSAGE_ENABLED
-        }
-
     }
 
     private fun setAnimationColor(color: Int?) {
@@ -60,10 +53,9 @@ class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    override fun startCircularRevealAnimation(data: ButtonCRevealAnimationData, animEndListener: ButtonAnimationEndListener) {
-
+    override fun startCircularRevealAnimation(data: ButtonCRevealAnimationData, listener: ((viewId: Int) -> Unit)?) {
         //Assemble animator
-        val animator = assembleAnimator(data, animEndListener)
+        val animator = assembleAnimator(data, listener)
 
         //Set the color of the animation
         setAnimationColor(data.animColor)
@@ -84,7 +76,7 @@ class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private fun assembleAnimator(data: ButtonCRevealAnimationData, animEndListener: ButtonAnimationEndListener?): Animator {
+    private fun assembleAnimator(data: ButtonCRevealAnimationData, listener: ((viewId: Int) -> Unit)?): Animator {
 
         val endRadius = Math.hypot(width.toDouble(), height.toDouble()).toInt()
         val anim = ViewAnimationUtils.createCircularReveal(animationMask, data.x, data.y, data.animStartRadius.toFloat(), endRadius.toFloat())
@@ -102,11 +94,11 @@ class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
             }
 
             override fun onAnimationEnd(animator: Animator) {
-                if (isDebugMessagesEnabled) {
+                DebugUtil.debug {
                     Log.d(TAG, "onAnimationEnd AnimatedLoadingButton")
                 }
                 isAnimInProgress = false
-                animEndListener?.onAnimationEnded(id)
+                listener?.invoke(id)
             }
 
             override fun onAnimationCancel(animator: Animator) {
@@ -126,11 +118,4 @@ class CircularRevealContainerImpl : FrameLayout, CircularRevealContainer {
         } else true
     }
 
-    companion object {
-
-        private val TAG = "CircularRevealContainer"
-
-        private val IS_DEBUG_MESSAGE_ENABLED = false
-        private val ANIM_DURATION = 2000
-    }
 }

@@ -15,14 +15,13 @@ import android.view.View
 import com.apppoweron.circularrevealbutton.container.ButtonCRevealAnimationData
 import com.apppoweron.circularrevealbutton.container.CircularRevealContainer
 import com.apppoweron.circularrevealbutton.container.CircularRevealContainerNotFoundException
+import com.apppoweron.circularrevealbutton.util.DebugUtil
 import com.apppoweron.circularrevealbutton.util.UIHierarchyUtil
 
 class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
 
-
     companion object {
         private const val TAG = "AnimatedLoadingButton"
-        private const val isDebugMessagesEnabled = true
 
         private const val DEFAULT_REQUIRED_OFFSET: Byte = 20
         private const val DEFAULT_PROGRESS_WIDTH: Byte = 8
@@ -56,8 +55,8 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
     private var mGradientDrawable: GradientDrawable? = null
     private var mAnimatedDrawable: CircularAnimatedDrawable? = null
 
-    private var mAnimationStartListener: ButtonAnimationStartListener? = null
-    private var mAnimationEndListener: ButtonAnimationEndListener? = null
+    private var mAnimationStartListener: ((viewId: Int) -> Unit)? = null
+    private var mAnimationEndListener: ((viewId: Int) -> Unit)? = null
 
     private var mButtonColorProvider: ButtonColorProvider? = null
 
@@ -110,7 +109,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mGradientDrawable!!.setColor(mButtonColorProvider!!.buttonOriginalColorId)
+            mButtonColorProvider?.buttonOriginalColorId?.let { mGradientDrawable?.setColor(it) }
         }
 
         val typedArray: TypedArray
@@ -142,7 +141,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
 
             if (typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0) != 0) {
                 val bgColor = typedArray.getColor(R.styleable.CircularRevealButton_buttonBackgroundColor, 0)
-                mGradientDrawable!!.setColor(bgColor)
+                mGradientDrawable?.setColor(bgColor)
             }
 
             typedArray.recycle()
@@ -176,7 +175,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
      *
      * @param listener animation start listener
      */
-    private fun startProgressAnimation(listener: ButtonAnimationStartListener? = mAnimationStartListener) {
+    private fun startProgressAnimation(listener: ((viewId: Int) -> Unit)? = mAnimationStartListener) {
         if (mState != State.IDLE) {
             return
         }
@@ -186,18 +185,18 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
         mState = State.PROGRESS
         isClickable = false
 
-        animateButtonDimensions(isExpansionAnim(listener), listener)
+        animateButtonDimensions(isExpansionAnim(), listener)
     }
 
     /**
      * Start expanding animation, it can be circular reveal or expanding
      */
     @JvmOverloads
-    fun startProgressEndAnimation(listener: ButtonAnimationEndListener? = mAnimationEndListener) {
+    fun startProgressEndAnimation(listener: ((viewId: Int) -> Unit)? = mAnimationEndListener) {
         try {
             startProgressEndAnimation(0, listener)
         } catch (e: CircularRevealContainerNotFoundException) {
-            if (isDebugMessagesEnabled) {
+            DebugUtil.debug {
                 Log.e(TAG, "Container not found!")
             }
         }
@@ -211,7 +210,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
      */
     @Throws(CircularRevealContainerNotFoundException::class)
     @JvmOverloads
-    fun startProgressEndAnimation(containerId: Int, listener: ButtonAnimationEndListener? = mAnimationEndListener) {
+    fun startProgressEndAnimation(containerId: Int, listener: ((viewId: Int) -> Unit)? = mAnimationEndListener) {
         if (isCircularRevealEnabled) {
             startCircularReveal(containerId, listener)
         } else {
@@ -224,7 +223,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
      *
      * @param listener listener for end of animation
      */
-    private fun startExpandAnimation(listener: ButtonAnimationEndListener?) {
+    private fun startExpandAnimation(listener: ((viewId: Int) -> Unit)?) {
         if (mState != State.PROGRESS) {
             return
         }
@@ -235,13 +234,13 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
         }
         isClickable = true
 
-        animateButtonDimensions(isExpansionAnim(listener), listener)
+        animateButtonDimensions(isExpansionAnim(), listener)
     }
 
-    private fun animateButtonDimensions(isExpansion: Boolean, listener: BaseAnimationListener?) {
+    private fun animateButtonDimensions(isExpansion: Boolean, listener: ((viewId: Int) -> Unit)?) {
 
-        if (!isExpansion && listener != null && listener is ButtonAnimationStartListener) {
-            listener.onAnimationStarted(id)
+        if (!isExpansion) {
+            listener?.invoke(id)
         }
         mIsSizingInProgress = true
         val animatorSet = getButtonSizingAnimatorSet(isExpansion)
@@ -249,16 +248,16 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
             override fun onAnimationEnd(animation: Animator) {
                 mIsSizingInProgress = false
 
-                if (isExpansion && listener != null && listener is ButtonAnimationEndListener) {
-                    listener.onAnimationEnded(id)
+                if (isExpansion) {
+                    listener?.invoke(id)
                 }
             }
         })
         animatorSet.start()
     }
 
-    private fun <T : BaseAnimationListener> isExpansionAnim(listener: T?): Boolean {
-        return listener?.isExpandingAnimation ?: (mState == State.IDLE)
+    private fun isExpansionAnim(): Boolean {
+        return mState == State.IDLE
     }
 
     private fun getButtonSizingAnimatorSet(isExpansion: Boolean): AnimatorSet {
@@ -364,11 +363,11 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
         mCircularRevealAnimDuration = duration
     }
 
-    fun setAnimationStartListener(listener: ButtonAnimationStartListener) {
+    fun setAnimationStartListener(listener: ((viewId: Int) -> Unit)?) {
         mAnimationStartListener = listener
     }
 
-    fun setAnimationEndListener(listener: ButtonAnimationEndListener) {
+    fun setAnimationEndListener(listener: ((viewId: Int) -> Unit)?) {
         mAnimationEndListener = listener
     }
 
@@ -377,51 +376,47 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
     }
 
     @Throws(CircularRevealContainerNotFoundException::class)
-    fun startCircularReveal(animEndListener: ButtonAnimationEndListener) {
-        startCircularReveal(mCircularRevealContainer, animEndListener)
-    }
-
-    @Throws(CircularRevealContainerNotFoundException::class)
-    fun startCircularReveal(containerId: Int, animEndListener: ButtonAnimationEndListener?) {
-        startCircularReveal(UIHierarchyUtil.getViewByIdInParents(containerId, this) as CircularRevealContainer, animEndListener)
+    fun startCircularReveal(containerId: Int, listener: ((viewId: Int) -> Unit)?) {
+        startCircularReveal(UIHierarchyUtil.getViewByIdInParents(containerId, this) as CircularRevealContainer, listener)
     }
 
     @Throws(CircularRevealContainerNotFoundException::class)
     @JvmOverloads
-    fun startCircularReveal(container: CircularRevealContainer? = mCircularRevealContainer, animEndListener: ButtonAnimationEndListener? = null) {
+    fun startCircularReveal(container: CircularRevealContainer? = mCircularRevealContainer, listener: ((viewId: Int) -> Unit)?) {
         mState = State.IDLE
         if (mAnimatedDrawable != null) {
             mAnimatedDrawable!!.stop()
         }
         try {
-            startCircularRevealAnimationOnContainer(container, animEndListener)
+            startCircularRevealAnimationOnContainer(container, listener)
         } catch (e: OSNotSupportedException) {
-            if (isDebugMessagesEnabled) {
+            DebugUtil.debug {
                 Log.e(TAG, "Version of the current device is lower than Lollipop!")
             }
-            animEndListener?.onAnimationEnded(id)
+            listener?.invoke(id)
             invalidate()
         }
 
     }
 
     @Throws(CircularRevealContainerNotFoundException::class, OSNotSupportedException::class)
-    private fun startCircularRevealAnimationOnContainer(container: CircularRevealContainer?, animEndListener: ButtonAnimationEndListener?) {
+    private fun startCircularRevealAnimationOnContainer(container: CircularRevealContainer?, listener: ((viewId: Int) -> Unit)?) {
         if (container != null) {
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> container.startCircularRevealAnimation(ButtonCRevealAnimationData.ButtonDataBuilder(this, container)
-                        .animColor(this)
-                        .animDuration(mCircularRevealAnimDuration)
-                        .build(), animEndListener!!)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> container.startCircularRevealAnimation(ButtonCRevealAnimationData.ButtonDataBuilder(this, container)
-                        .animColor(mButtonColorProvider!!.buttonOriginalColorId)
-                        .animDuration(mCircularRevealAnimDuration)
-                        .build(), animEndListener!!)
-                else -> throw OSNotSupportedException()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                container.startCircularRevealAnimation(ButtonCRevealAnimationData.create(this, container) {
+                    animColor { mButtonColorProvider?.buttonOriginalColorId }
+                    animDuration { mCircularRevealAnimDuration }
+                }, listener)
+            } else {
+                throw OSNotSupportedException()
             }
+
         } else {
             throw CircularRevealContainerNotFoundException()
         }
     }
+
+
 
 }

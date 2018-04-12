@@ -5,7 +5,7 @@ import android.view.View
 
 object UIHierarchyUtil {
 
-    private val TAG = "UIHierarchyUtil"
+    private const val TAG = "UIHierarchyUtil"
 
     fun getViewByIdInParents(searchedViewId: Int, startView: View): View? {
         var currentView: View? = startView
