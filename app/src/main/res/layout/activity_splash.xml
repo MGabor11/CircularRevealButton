@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
         android:id="@+id/splash_anim_btn"
-        android:layout_width="287dp"
-        android:layout_height="74dp"
+        android:layout_width="@dimen/splash_button_width"
+        android:layout_height="@dimen/splash_button_height"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="55dp"
-        android:text="Circular Reveal Button Demo"
+        android:layout_marginBottom="@dimen/splash_button_margin_bottom"
+        android:text="@string/splash_title"
         android:clickable="false"
-        app:progressColor="#000"
-        app:buttonBackgroundColor="#FFF"
+        app:progressColor="@color/splash_button_progress"
+        app:buttonBackgroundColor="@color/splash_button_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 </android.support.constraint.ConstraintLayout>

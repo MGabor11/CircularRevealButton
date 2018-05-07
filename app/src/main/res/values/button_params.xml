@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="animated_btn_1_required_offset">21</integer>
+    <integer name="circular_reveal_long_duration">10000</integer>
+    <bool name="is_animation_enabled_for_animated_btn">true</bool>
+</resources>

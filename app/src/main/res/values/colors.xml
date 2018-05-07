@@ -6,4 +6,24 @@
     <color name="test_btn_color">#e1e90e</color>
     <color name="test_btn_secondary_color">#6df116</color>
     <color name="test_btn_color_3">#1131e7</color>
+
+    <!--Splash-->
+    <color name="splash_button_progress">#000000</color>
+    <color name="splash_button_bg">#FFFFFF</color>
+
+    <!--Main page-->
+    <color name="main_standard_1_text">#FFFFFF</color>
+    <color name="main_standard_1_progress">#FF0000</color>
+    <color name="main_standard_1_bg">@color/test_btn_secondary_color</color>
+    <color name="main_standard_2_text">@android:color/holo_red_dark</color>
+    <color name="main_circular_1_text">@android:color/holo_blue_light</color>
+    <color name="main_circular_1_bg">@color/test_btn_secondary_color</color>
+    <color name="main_circular_2_text">@android:color/holo_red_dark</color>
+    <color name="main_circular_2_bg">@color/test_btn_color</color>
+    <color name="main_hybrid_bg">@color/test_btn_color_3</color>
+    <color name="main_hybrid_text">@android:color/holo_red_dark</color>
+
+    <!--Second page-->
+
+
 </resources>
