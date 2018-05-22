@@ -1,32 +1,28 @@
 package com.apppoweron.circularrevealbuttondemo
 
-import android.content.Intent
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.os.Handler
-import com.apppoweron.circularrevealbutton.AnimatedLoadingButton
+import com.apppoweron.circularrevealbuttondemo.common.BaseActivity
+import com.apppoweron.circularrevealbuttondemo.viewmodel.SplashViewModel
+import com.apppoweron.circularrevealbuttondemo.viewmodel.impl.SplashViewModelImpl
 
 class SplashActivity : BaseActivity() {
 
     companion object {
-        private const val BUTTON_START_DELAY: Short = 500
-        private const val EXPANSION_ANIM_DURATION: Short = 1500
-        private const val PROGRESS_DURATION: Short = 1000
+        private const val TAG = "SplashActivity"
     }
 
-    private var mSplashDurationHandler: Handler? = null
+    private var mSplashViewModel: SplashViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-    }
 
-    override fun onResume() {
-        super.onResume()
-        val splashButton = findViewById<AnimatedLoadingButton>(R.id.splash_anim_btn)
+       //val splashButton = findViewById<AnimatedLoadingButton>(R.id.splash_anim_btn)
 
-        mSplashDurationHandler = Handler()
+        mSplashViewModel = ViewModelProviders.of(this).get(SplashViewModelImpl::class.java)
 
-        splashButton.setExpansionAnimDuration(EXPANSION_ANIM_DURATION.toInt())
+        /*splashButton.setExpansionAnimDuration(EXPANSION_ANIM_DURATION.toInt())
         mSplashDurationHandler!!.postDelayed({
             splashButton.callOnClick()
             mSplashDurationHandler!!.postDelayed({
@@ -38,14 +34,13 @@ class SplashActivity : BaseActivity() {
                     finish()
                 }
             }, (EXPANSION_ANIM_DURATION + PROGRESS_DURATION).toLong())
-        }, BUTTON_START_DELAY.toLong())
-
+        }, BUTTON_START_DELAY.toLong())*/
 
     }
 
-    override fun onPause() {
-        super.onPause()
-        mSplashDurationHandler!!.removeCallbacksAndMessages(null)
+    override fun onDestroy() {
+        mSplashViewModel?.onViewDetached()
+        super.onDestroy()
     }
 
 }

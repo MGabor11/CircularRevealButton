@@ -2,6 +2,8 @@ package com.apppoweron.circularrevealbuttondemo
 
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
+import com.apppoweron.circularrevealbuttondemo.common.BaseActivity
+import com.apppoweron.circularrevealbuttondemo.common.NoContainerException
 
 class MainActivity : BaseActivity() {
 

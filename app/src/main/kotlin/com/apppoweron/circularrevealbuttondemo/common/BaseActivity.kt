@@ -1,4 +1,4 @@
-package com.apppoweron.circularrevealbuttondemo
+package com.apppoweron.circularrevealbuttondemo.common
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -53,8 +53,8 @@ abstract class BaseActivity : AppCompatActivity(), FragmentCommunicator {
     @JvmOverloads
     fun loadFragment(fragment: Fragment, loadType: FragmentLoadType, needToBackStack: Boolean = false) {
         when (loadType) {
-            BaseActivity.FragmentLoadType.ADD -> addFragment(fragment)
-            BaseActivity.FragmentLoadType.REPLACE -> replaceFragment(fragment, needToBackStack)
+            FragmentLoadType.ADD -> addFragment(fragment)
+            FragmentLoadType.REPLACE -> replaceFragment(fragment, needToBackStack)
         }
     }
 

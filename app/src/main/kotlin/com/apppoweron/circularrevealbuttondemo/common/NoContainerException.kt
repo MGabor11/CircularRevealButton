@@ -1,4 +1,4 @@
-package com.apppoweron.circularrevealbuttondemo
+package com.apppoweron.circularrevealbuttondemo.common
 
 class NoContainerException : Exception() {
 
