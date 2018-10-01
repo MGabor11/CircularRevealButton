@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-
 import com.apppoweron.circularrevealbutton.AnimatedLoadingButton
 import com.apppoweron.circularrevealbutton.container.CircularRevealContainerNotFoundException
+import com.apppoweron.circularrevealbuttondemo.common.BaseFragment
+import com.apppoweron.circularrevealbuttondemo.common.NoContainerException
+import io.reactivex.Completable
+import java.util.concurrent.TimeUnit
 
 class MainFragment : BaseFragment() {
 
-
     companion object {
-
         fun newInstance(): MainFragment {
             return MainFragment()
         }
@@ -30,6 +31,17 @@ class MainFragment : BaseFragment() {
         val animated1 = view.findViewById<AnimatedLoadingButton>(R.id.main_animated_1_btn)
         val animated2 = view.findViewById<AnimatedLoadingButton>(R.id.main_animated_2_btn)
 
+
+        /*Completable.complete()
+                .delay(3,TimeUnit.SECONDS)
+                .doOnComplete(() -> System.out.println("Time to complete " + (System.currentTimeMillis() - start)))
+        .subscribe();*/
+        Completable.complete()
+                .doOnSubscribe{}
+                .delay(3, TimeUnit.SECONDS)
+                .doOnComplete {  }
+                /*.doOnComplete(() -> run {})*/.subscribe()
+
         val hybridUsage = view.findViewById<AnimatedLoadingButton>(R.id.main_hybrid_btn)
         hybridUsage.setOnClickListener { view1 ->
             view.postDelayed({
@@ -39,12 +51,7 @@ class MainFragment : BaseFragment() {
                         Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
 
                         if (button.isCircularRevealEnabled) {
-                            try {
-                                mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
-                            } catch (e: NoContainerException) {
-                                e.printStackTrace()
-                            }
-
+                            navigateToSecondPage()
                         } else {
                             button.isCircularRevealEnabled = true
                             button.setText(R.string.tap_to_start_circular_reveal_animation)
@@ -71,17 +78,21 @@ class MainFragment : BaseFragment() {
                         Toast.makeText(view.context, "onAnimEnd - " + button.text, Toast.LENGTH_LONG).show()
 
                         if (it != R.id.main_standard_1_btn && it != R.id.main_standard_2_btn) {
-                            try {
-                                mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
-                            } catch (e: NoContainerException) {
-                                e.printStackTrace()
-                            }
+                            navigateToSecondPage()
                         }
                     }
                 } catch (e: CircularRevealContainerNotFoundException) {
                     e.printStackTrace()
                 }
             }, 6000)
+        }
+    }
+
+    private fun navigateToSecondPage() {
+        try {
+            mFragmentCommunicator.onNewFragmentSelected(SecondPageFragment.newInstance(), true, true)
+        } catch (e: NoContainerException) {
+            e.printStackTrace()
         }
     }
 

@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">CircularRevealButtonDemo</string>
-    <string name="tap_to_start_standard_animation">Tap to start standard animation</string>
+
+    <!--Splash-->
+    <string name="splash_title">Circular Reveal Button Demo</string>
     <string name="tap_to_start_circular_reveal_animation">Tap to start circular reveal animation</string>
+
+    <!--Main page with buttons-->
+    <string name="main_standard_1">Standard loading button 1</string>
+    <string name="main_standard_2">Standard loading button 2</string>
+    <string name="main_circular_1">Circular reveal button 1</string>
+    <string name="main_circular_2">Circular reveal button 2</string>
+    <string name="tap_to_start_standard_animation">Tap to start standard animation</string>
+    <string name="main_remove_animation_layer">Remove animation layer</string>
+
+    <!--Second screen-->
+    <string name="second_page_description">Second page, press back button to go back to main page!</string>
 </resources>

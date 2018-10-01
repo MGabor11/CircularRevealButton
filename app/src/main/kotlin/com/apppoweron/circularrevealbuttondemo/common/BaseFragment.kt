@@ -1,4 +1,4 @@
-package com.apppoweron.circularrevealbuttondemo
+package com.apppoweron.circularrevealbuttondemo.common
 
 import android.content.Context
 import android.support.v4.app.Fragment

@@ -9,40 +9,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="@dimen/standard_page_padding">
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_standard_1_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:text="Standard loading button 1"
-            android:textColor="@android:color/white"
-            app:buttonBackgroundColor="@color/test_btn_secondary_color"
-            app:progressColor="#F00" />
+            android:layout_marginTop="@dimen/standard_btn_margin_top"
+            android:text="@string/main_standard_1"
+            android:textColor="@color/main_standard_1_text"
+            app:buttonBackgroundColor="@color/main_standard_1_bg"
+            app:progressColor="@color/main_standard_1_progress" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_standard_2_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:text="Standard loading button 2"
-            android:textColor="@android:color/holo_red_dark" />
+            android:layout_marginTop="@dimen/standard_btn_margin_top"
+            android:text="@string/main_standard_2"
+            android:textColor="@color/main_standard_2_text" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_animated_1_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-
-            android:layout_marginTop="15dp"
-            android:text="Circular reveal button 1"
-            android:textColor="@android:color/holo_blue_light"
-            app:buttonBackgroundColor="@color/test_btn_secondary_color"
-            app:isAnimEnabled="true"
-            app:requiredOffset="21" />
+            android:layout_marginTop="@dimen/standard_btn_margin_top"
+            android:text="@string/main_circular_1"
+            android:textColor="@color/main_circular_1_text"
+            app:buttonBackgroundColor="@color/main_circular_1_bg"
+            app:isAnimEnabled="@bool/is_animation_enabled_for_animated_btn"
+            app:requiredOffset="@integer/animated_btn_1_required_offset" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_animated_2_btn"
@@ -50,11 +49,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
 
-            android:layout_marginTop="15dp"
-            android:text="Circular reveal button 2"
-            android:textColor="@android:color/holo_red_dark"
-            app:buttonBackgroundColor="@color/test_btn_color"
-            app:isAnimEnabled="true" />
+            android:layout_marginTop="@dimen/standard_btn_margin_top"
+            android:text="@string/main_circular_2"
+            android:textColor="@color/main_circular_2_text"
+            app:buttonBackgroundColor="@color/main_circular_2_bg"
+            app:isAnimEnabled="@bool/is_animation_enabled_for_animated_btn" />
 
         <com.apppoweron.circularrevealbutton.AnimatedLoadingButton
             android:id="@+id/main_hybrid_btn"
@@ -62,10 +61,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
 
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/standard_btn_margin_top"
             android:text="@string/tap_to_start_standard_animation"
-            android:textColor="@android:color/holo_red_dark"
-            app:buttonBackgroundColor="@color/test_btn_color_3" />
+            android:textColor="@color/main_hybrid_text"
+            app:buttonBackgroundColor="@color/main_hybrid_bg" />
 
     </LinearLayout>
 
@@ -74,8 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="10dp"
-        android:text="Remove animation layer"
+        android:layout_margin="@dimen/remove_layer_btn_margin"
+        android:text="@string/main_remove_animation_layer"
         android:visibility="gone" />
 
 
