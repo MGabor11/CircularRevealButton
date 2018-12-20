@@ -175,7 +175,7 @@ class AnimatedLoadingButton : AppCompatButton, View.OnClickListener {
      *
      * @param listener animation start listener
      */
-    private fun startProgressAnimation(listener: ((viewId: Int) -> Unit)? = mAnimationStartListener) {
+    fun startProgressAnimation(listener: ((viewId: Int) -> Unit)? = mAnimationStartListener) {
         if (mState != State.IDLE) {
             return
         }
