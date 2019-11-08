@@ -1,4 +1,7 @@
-group 'com.github.MGabor11'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+group 'com.apppoweron.circularrevealbutton'
 version = '0.2.1'
 
 project.ext {
@@ -6,8 +9,82 @@ project.ext {
     mavProjectName = 'CircularRevealButton'
     mavLibraryLicenses = ["Apache-2.0":'http://www.apache.org/licenses/LICENSE-2.0.txt']
     mavLibraryDescription = "Android animation library"
-    mavPublishToMavenLocal = true
+
     mavSiteUrl = 'https://github.com/MGabor11/CircularRevealButton'
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact("$buildDir/outputs/aar/library-debug.aar") // replace with your library name
+            groupId this.group
+            artifactId 'library' // replace with your library artifact id
+            version this.version
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                // Iterate over the implementation dependencies (we don't want the test ones),
+                // adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    // Ensure dependencies such as fileTree are not included in the pom.
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+tasks.withType(Javadoc).all {
+    enabled = false
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+def properties = new Properties()
+properties.load(new FileInputStream("local.properties"))
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    publications = ['Production']
+    configurations = ['archives']
+    dryRun = false
+    override = true
+    publish = true
+    pkg {
+        repo = 'CircularRevealButton'
+        name = 'com.apppoweron.circularrevealbutton'
+
+        version {
+            name = this.version
+            desc = "Version ${this.version}"
+            released = new Date()
+            vcsTag = this.version
+        }
+    }
 }
 
 apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'
