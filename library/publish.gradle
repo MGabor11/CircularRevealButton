@@ -1,7 +1,7 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-group 'com.apppoweron.circularrevealbutton'
+group 'com.github.mgabor11'
 version = '0.2.1'
 
 project.ext {
@@ -67,6 +67,7 @@ def properties = new Properties()
 properties.load(new FileInputStream("local.properties"))
 
 bintray {
+    def gpgpassphrase = properties.getProperty("bintray.gpg.password")
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
     publications = ['Production']
@@ -76,13 +77,18 @@ bintray {
     publish = true
     pkg {
         repo = 'CircularRevealButton'
-        name = 'com.apppoweron.circularrevealbutton'
+        name = 'com.github.mgabor11'
 
         version {
             name = this.version
             desc = "Version ${this.version}"
             released = new Date()
             vcsTag = this.version
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = gpgpassphrase
+                //Optional. The passphrase for GPG signing'
+            }
         }
     }
 }
