@@ -4,15 +4,6 @@ apply plugin: 'com.jfrog.bintray'
 group 'com.github.mgabor11'
 version = '0.2.1'
 
-project.ext {
-    mavGitUrl = 'https://github.com/MGabor11/CircularRevealButton.git'
-    mavProjectName = 'CircularRevealButton'
-    mavLibraryLicenses = ["Apache-2.0":'http://www.apache.org/licenses/LICENSE-2.0.txt']
-    mavLibraryDescription = "Android animation library"
-
-    mavSiteUrl = 'https://github.com/MGabor11/CircularRevealButton'
-}
-
 publishing {
     publications {
         Production(MavenPublication) {
@@ -20,14 +11,36 @@ publishing {
             groupId this.group
             artifactId 'library' // replace with your library artifact id
             version this.version
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
+            pom {
+                name = 'library'
+                description = 'An Android UI lib for circular reveal animation'
+                // If your project has a dedicated site, use its URL here
+                url = 'https://github.com/MGabor11/CircularRevealButton'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'mgabor11'
+                        name = 'Gabor Marosfalvi'
+                        email = 'marosfalvi.gabor@gmail.com'
+                    }
+                }
+                // Version control info, if you're using GitHub, follow the format as seen here
+                scm {
+                    connection = 'scm:git:github.com/MGabor11/CircularRevealButton.git'
+                    developerConnection = 'scm:git:https://github.com/MGabor11/CircularRevealButton.git'
+                    url = 'https://github.com/MGabor11/CircularRevealButton/tree/master'
+                }
+                // A slightly hacky fix so that your POM will include any transitive dependencies
+                // that your library builds upon
+                withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
 
-                // Iterate over the implementation dependencies (we don't want the test ones),
-                // adding a <dependency> node for each
-                configurations.implementation.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included in the pom.
-                    if (it.name != 'unspecified') {
+                    project.configurations.implementation.allDependencies.each {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         dependencyNode.appendNode('groupId', it.group)
                         dependencyNode.appendNode('artifactId', it.name)
