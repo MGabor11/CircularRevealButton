@@ -1,0 +1,13 @@
+group 'com.github.MGabor11'
+version = '0.2.1'
+
+project.ext {
+    mavGitUrl = 'https://github.com/MGabor11/CircularRevealButton.git'
+    mavProjectName = 'CircularRevealButton'
+    mavLibraryLicenses = ["Apache-2.0":'http://www.apache.org/licenses/LICENSE-2.0.txt']
+    mavLibraryDescription = "Android animation library"
+    mavPublishToMavenLocal = true
+    mavSiteUrl = 'https://github.com/MGabor11/CircularRevealButton'
+}
+
+apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'
