@@ -5,17 +5,19 @@ Codebase was changed from Java to Kotlin, which means that project new features 
 
 ### Library became reachable in JitPack package repository
 Add it in your root build.gradle
-```allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 Add the dependency
-```dependencies {
-	        implementation 'com.github.MGabor11:CircularRevealButton:v0.2.1'
-	}
+```
+dependencies {
+	implementation 'com.github.MGabor11:CircularRevealButton:v0.2.1'
+}
 ```
 
 ## Core functions
